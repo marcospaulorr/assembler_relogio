@@ -1,0 +1,219 @@
+# ------ SETUP -----
+CLR # AC <- 0
+
+# Limpa todos os displays e LEDs
+STA @288 # HEX0 - segundos (unidades)
+STA @289 # HEX1 - segundos (dezenas)
+STA @290 # HEX2 - minutos (unidades)
+STA @291 # HEX3 - minutos (dezenas)
+STA @292 # HEX4 - horas (unidades)
+STA @293 # HEX5 - horas (dezenas)
+
+# Limpa LEDs
+STA @256 # LEDR0-7
+STA @257 # LEDR8
+STA @258 # LEDR9
+
+# Limpa leituras dos botões
+STA @510 # Limpa KEY1
+STA @511 # Limpa KEY0
+
+# Inicializa variáveis do tempo com 00:00:00
+STA @0 # segundos (unidades)
+STA @1 # segundos (dezenas)
+STA @2 # minutos (unidades)
+STA @3 # minutos (dezenas)
+STA @4 # horas (unidades)
+STA @5 # horas (dezenas)
+
+# Inicializa flags
+STA @9 # const_0 = 0
+STA @12 # flag_ajuste_rapido = 0 (modo normal)
+STA @13 # flag_base_tempo = 0 (contador inicial)
+
+# Definindo constantes
+LDI $1
+STA @6 # const_1 = 1 (para incrementos e verifica se as KEYs estão pressionadas)
+
+LDI $10
+STA @7 # const_10 = 10 (limite decimal)
+
+LDI $6
+STA @8 # const_6 = 6 (limite de dezenas de segundos/minutos)
+
+LDI $4
+STA @10 # const_4 = 4 (para verificação de dezena de horas)
+
+LDI $24
+STA @11 # const_24 = 24 (limite de horas total)
+
+LDI $2
+STA @14 # const_2 = 2 (para verificação de dezena de horas)
+
+JMP INICIA_CONFIG # Se pressionado (KEY1=1), vai para incremento
+
+# ----- FIM DO SETUP ----
+# Laço principal (LOOP)
+LOOP:
+    # 1 -> Leitura de KEY0 (base de tempo/incremento de segundos)
+    LDA @352 # AC <- KEY0
+    ANDI $1 # Pega o último bit.
+    CEQ @6 # Compara com const_1. flagzero=1 se KEY0=1 (pressionado)
+    JEQ inc_tempo # Se pressionado (KEY0=1), vai para incremento
+    JMP skip_tick # Se não pressionado (KEY0=0), pula incremento
+
+INICIA_CONFIG:
+    # Limpa KEY1 (debounce)
+    STA @510
+    # Zera o relógio completamente
+    CLR
+    STA @0  # segundos (unidades)
+    STA @1  # segundos (dezenas)
+    STA @2  # minutos (unidades)
+    STA @3  # minutos (dezenas)
+    STA @4  # horas (unidades)
+    STA @5  # horas (dezenas)
+    # Atualiza displays mostrando todos zerados
+    CLR
+    STA @288  # HEX0
+    STA @289  # HEX1
+    STA @290  # HEX2
+    STA @291  # HEX3
+    STA @292  # HEX4
+    STA @293  # HEX5
+
+    JMP LOOP
+
+inc_tempo:
+    JSR INC_SEGUNDO # Sub-rotina de incremento
+    JMP skip_tick # Continua após incremento
+
+skip_tick:
+    # 2 -> Atualiza displays com horário atual
+    LDA @0 # segundos (unidades)
+    STA @288 # HEX0 <- segundos (unidades)
+    LDA @1 # segundos (dezenas)
+    STA @289 # HEX1 <- segundos (dezenas)
+    LDA @2 # minutos (unidades)
+    STA @290 # HEX2 <- minutos (unidades)
+    LDA @3 # minutos (dezenas)
+    STA @291 # HEX3 <- minutos (dezenas)
+    LDA @4 # horas (unidades)
+    STA @292 # HEX4 <- horas (unidades)
+    LDA @5 # horas (dezenas)
+    STA @293 # HEX5 <- horas (dezenas)
+
+    # 3 -> Verifica KEY1 (ajuste de minutos)
+    
+    JMP LOOP # Se não pressionado (KEY1=0), pula ajuste
+
+
+
+# ======= SUB-ROTINAS =======
+
+# Sub-rotina para incrementar segundos
+INC_SEGUNDO:
+    STA @511 # Limpa KEY0 (debounce)
+
+    # Incrementa SEGUNDOS (unidades)
+    LDA @0 # AC <- segundos (unidades)
+    SOMA @6 # AC <- AC + 1
+    CEQ @7 # Compara com 10 (flagzero=1 se AC=10)
+    JEQ inc_seg_dez # Se igual a 10, incrementa dezena de segundos
+    STA @0 # Caso contrario, atualiza unidade de segundos
+    RET
+
+inc_seg_dez:
+    # Incrementa SEGUNDOS (dezenas)
+    CLR
+    STA @0 # Zera unidade de segundos
+    LDA @1 # AC <- segundos (dezenas)
+    SOMA @6 # AC <- AC + 1
+    CEQ @8 # Compara com 6 (flagzero=1 se AC=6)
+    JEQ inc_uni_min # Se igual a 6, incrementa minutos
+    STA @1 # Caso contrario, atualiza dezena de segundos
+    JMP skip_tick
+
+inc_uni_min:
+    # Incrementa MINUTOS (unidades)
+    CLR
+    STA @1 # Zera dezena de segundos
+    LDA @2 # AC <- minutos (unidades)
+    SOMA @6 # AC <- AC + 1
+    CEQ @7 # Compara com 10 (flagzero=1 se AC=10)
+    JEQ inc_min_dez # Se igual a 10, incrementa dezena de minutos
+    STA @2 # Caso contrario, atualiza unidade de minutos
+    JMP skip_tick
+
+inc_min_dez:
+    # Incrementa MINUTOS (dezenas)
+    CLR
+    STA @2 # Zera unidade de minutos
+    LDA @3 # AC <- minutos (dezenas)
+    SOMA @6 # AC <- AC + 1
+    CEQ @8 # Compara com 6 (flagzero=1 se AC=6)
+    JEQ inc_hora_uni # Se igual a 6, incrementa horas
+    STA @3 # Caso contrario, atualiza dezena de minutos
+    JMP skip_tick
+
+inc_hora_uni:
+    # Incrementa HORAS (unidades)
+    CLR
+    STA @3        # Zera dezena de minutos
+    LDA @4        # AC <- horas (unidades)
+    SOMA @6       # AC <- AC + 1
+    STA @15       # Guarda temporariamente o valor incrementado
+
+    # Verifica se dezena da hora é igual a 2
+    LDA @5
+    CEQ @14       # Compara com 2
+    JEQ verifica_24
+
+    # Se for menor que 2, verifica se unidade < 10
+    CLT @14       # Compara se dezena < 2
+    JLT verifica_menor_2
+
+    # Se for maior que 2 (erro, mas previne), unidade deve ir até 3
+    LDA @15
+    CEQ @10       # Compara com 4
+    JEQ inc_hora_dez
+    STA @4
+    JMP skip_tick
+
+verifica_menor_2:
+    LDA @15
+    CEQ @7        # Compara com 10
+    JEQ inc_hora_dez
+    STA @4
+    JMP skip_tick
+
+verifica_24:
+    # Verifica se chegou em 24:00:00
+    LDA @15 # Recupera valor incrementado da unidade de horas
+    CEQ @10 # Compara com 4 (flagzero=1 se unidade=4)
+    JEQ reset_24h # Se unidade=4 e dezena=2, chegou-se em 24h -> reset
+    STA @4 # Caso contrario, atualiza unidade de horas
+    JMP skip_tick
+
+inc_hora_dez:
+    # Incrementa HORAS (dezenas)
+    CLR
+    STA @4 # Zera unidade de horas
+    LDA @5 # AC <- horas (dezenas)
+    SOMA @6 # AC <- AC + 1
+    STA @5 # Atualiza dezena de horas
+    JMP skip_tick
+
+reset_24h:
+    # Reseta para 00:00:00
+    CLR
+    STA @0 # Zera segundos (unidades)
+    STA @1 # Zera segundos (dezenas)
+    STA @2 # Zera minutos (unidades)
+    STA @3 # Zera minutos (dezenas)
+    STA @4 # Zera horas (unidades)
+    STA @5 # Zera horas (dezenas)
+    JMP skip_tick
+
+
+
