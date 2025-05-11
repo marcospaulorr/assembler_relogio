@@ -37,7 +37,9 @@ mne: dict[str, int] = {
     "JSR": 0x9,
     "RET": 0xA,
     "AND": 0xB,
-    "ANDI": 0xC,          # ← novo opcode
+    "ANDI": 0xC,
+    "CEQI": 0xD,
+    "ADDI": 0xE,          # ← novo opcode
 }
 
 # ───────────────────  REGEX auxiliares  ───────────────────────────

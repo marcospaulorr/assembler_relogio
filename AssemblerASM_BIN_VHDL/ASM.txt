@@ -50,17 +50,260 @@ STA @11 # const_24 = 24 (limite de horas total)
 LDI $2
 STA @14 # const_2 = 2 (para verificação de dezena de horas)
 
+LDI $0
+STA @16 # const_0
+
+LDI $3
+STA @17 # const 3
+
 JMP INICIA_CONFIG # Se pressionado (KEY1=1), vai para incremento
 
 # ----- FIM DO SETUP ----
 # Laço principal (LOOP)
 LOOP:
+    # PARA CONFIGURAR O HORÁRIO MANUALMENTE
+    LDA @353 # AC <- KEY1
+    ANDI $1
+    CEQI $1 # Compara com const_1
+    JEQ ZERA_TUDO
+
     # 1 -> Leitura de KEY0 (base de tempo/incremento de segundos)
     LDA @352 # AC <- KEY0
     ANDI $1 # Pega o último bit.
-    CEQ @6 # Compara com const_1. flagzero=1 se KEY0=1 (pressionado)
+    CEQI $1 # Compara com const_1. flagzero=1 se KEY0=1 (pressionado)
     JEQ inc_tempo # Se pressionado (KEY0=1), vai para incremento
     JMP skip_tick # Se não pressionado (KEY0=0), pula incremento
+
+ZERA_TUDO:
+    # Limpa KEY1 (debounce)
+    STA @510
+    # Zera o relógio completamente
+    LDI $0
+    STA @0  # segundos (unidades)
+    STA @1  # segundos (dezenas)
+    STA @2  # minutos (unidades)
+    STA @3  # minutos (dezenas)
+    STA @4  # horas (unidades)
+    STA @5  # horas (dezenas)
+    # Atualiza displays mostrando todos zerados
+    LDI $0
+    STA @288  # HEX0
+    STA @289  # HEX1
+    STA @290  # HEX2
+    STA @291  # HEX3
+    STA @292  # HEX4
+    STA @293  # HEX5
+
+    STA @510
+    JMP CONFIGURA_UNI_SEG
+
+CONFIGURA_UNI_SEG:
+    LDI $1
+    STA @256 # Acende LEDR0
+
+    LDA @320 # SW0-7
+    ANDI $15 # 4 bits menos significativos
+    STA @50 # Armazena temporariamente
+    STA @288 # Aparece em HEX0
+
+    # Verifica se é válido
+    LDA @353 # AC <- KEY1 
+    ANDI $1
+    CEQI $1 # Compara com const_1
+    JEQ VERIFICA_UNI_SEG
+    JMP CONFIGURA_UNI_SEG
+
+VERIFICA_UNI_SEG:
+    STA @510
+    LDA @50 # AC <- Valor guardado temporariamente
+    CLT @7
+    JLT VALOR_VALIDO_UNI_SEG
+    LDI $0 
+    STA @0 
+    STA @288 # Exibe em HEX0
+    JMP CONFIGURA_DEZ_SEG
+
+VALOR_VALIDO_UNI_SEG:
+    LDA @50 # Recupera valor temporario
+    STA @0 # Salva na memória de unidade de segundos
+    STA @288 # Exibe em HEX0
+    JMP CONFIGURA_DEZ_SEG
+
+CONFIGURA_DEZ_SEG:
+    LDI $2
+    STA @256 # Acende LEDR1
+
+    LDA @320 # SW0-7
+    ANDI $15 # 4 bits menos significativos
+    STA @51 # Armazena temporariamente
+    STA @289 # Aparece em HEX0
+
+    # Verifica se é válido
+    LDA @353 # AC <- KEY1 
+    ANDI $1
+    CEQI $1 # Compara com const_1
+    JEQ VERIFICA_DEZ_SEG
+    JMP CONFIGURA_DEZ_SEG
+
+VERIFICA_DEZ_SEG:
+    STA @510
+    LDA @51 # AC <- Valor guardado temporariamente
+    CLT @8
+    JLT VALOR_VALIDO_DEZ_SEG
+    LDI $0 
+    STA @1 # Valor de memória dezena de segundo
+    STA @289 # Exibe em HEX0
+    JMP CONFIGURA_UNI_MIN
+
+VALOR_VALIDO_DEZ_SEG:
+    LDA @51 # Recupera valor temporario
+    STA @1 # Salva na memória de dezena de segundos
+    STA @289 # Exibe em HEX1
+    JMP CONFIGURA_UNI_MIN
+
+CONFIGURA_UNI_MIN:
+    LDI $4
+    STA @256 # Acende LEDR2
+
+    LDA @320 # SW0-7
+    ANDI $15 # 4 bits menos significativos
+    STA @52 # Armazena temporariamente
+    STA @290 # Aparece em HEX0
+
+    # Verifica se é válido
+    LDA @353 # AC <- KEY1 
+    ANDI $1
+    CEQI $1 # Compara com const_1
+    JEQ VERIFICA_UNI_MIN
+    JMP CONFIGURA_UNI_MIN
+
+VERIFICA_UNI_MIN:
+    STA @510
+    LDA @52 # AC <- Valor guardado temporariamente
+    CLT @7
+    JLT VALOR_VALIDO_UNI_MIN
+    LDI $0 
+    STA @2 # Valor de memória unidade de minuto
+    STA @290 # Exibe em HEX2
+    JMP CONFIGURA_DEZ_MIN
+
+VALOR_VALIDO_UNI_MIN:
+    LDA @52 # Recupera valor temporario
+    STA @2 # Salva na memória de segundo de minuto
+    STA @290 # Exibe em HEX2
+    JMP CONFIGURA_DEZ_MIN
+
+CONFIGURA_DEZ_MIN:
+    LDI $8
+    STA @256 # Acende LEDR3
+
+    LDA @320 # SW0-7
+    ANDI $15 # 4 bits menos significativos
+    STA @53 # Armazena temporariamente
+    STA @291 # Aparece em HEX3
+
+    # Verifica se é válido
+    LDA @353 # AC <- KEY1 
+    ANDI $1
+    CEQI $1 # Compara com const_1
+    JEQ VERIFICA_DEZ_MIN
+    JMP CONFIGURA_DEZ_MIN
+
+VERIFICA_DEZ_MIN:
+    STA @510
+    LDA @53 # AC <- Valor guardado temporariamente
+    CLT @8
+    JLT VALOR_VALIDO_DEZ_MIN
+    LDI $0 
+    STA @3 # Valor de memória dezena de minuto
+    STA @291 # Exibe em HEX3
+    JMP CONFIGURA_UNI_HORA
+
+VALOR_VALIDO_DEZ_MIN:
+    LDA @53 # Recupera valor temporario
+    STA @3 # Salva na memória de segundo de minuto
+    STA @291 # Exibe em HEX3
+    JMP CONFIGURA_UNI_HORA
+
+CONFIGURA_UNI_HORA:
+    LDI $16
+    STA @256 # Acende LEDR
+
+    LDA @320 # SW0-7
+    ANDI $15 # 4 bits menos significativos
+    STA @54 # Armazena temporariamente
+    STA @292 # Aparece em HEX4
+
+    # Verifica se é válido
+    LDA @353 # AC <- KEY1 
+    ANDI $1
+    CEQI $1 # Compara com const_1
+    JEQ VERIFICA_UNI_HORA
+    JMP CONFIGURA_UNI_HORA
+
+VERIFICA_UNI_HORA:
+    STA @510
+    LDA @54 # AC <- Valor guardado temporariamente
+    CLT @7
+    JLT VALOR_VALIDO_UNI_HORA
+    LDI $0 
+    STA @4 # Valor de memória unidade de hora
+    STA @292 # Exibe em HEX4
+    JMP CONFIGURA_DEZ_HORA
+
+VALOR_VALIDO_UNI_HORA:
+    LDA @54 # Recupera valor temporario
+    STA @4 # Salva na memória de unidade de hora
+    STA @292 # Exibe em HEX4
+    JMP CONFIGURA_DEZ_HORA
+
+CONFIGURA_DEZ_HORA:
+    LDI $32
+    STA @256 # Acende LEDR
+
+    LDA @320 # SW0-7
+    ANDI $15 # 4 bits menos significativos
+    STA @55 # Armazena temporariamente
+    STA @293 # Aparece em HEX5
+
+    # Verifica se é válido
+    LDA @353 # AC <- KEY1 
+    ANDI $1
+    CEQI $1 # Compara com const_1
+    JEQ VERIFICA_DEZ_HORA_LIMITE
+    JMP CONFIGURA_DEZ_HORA
+
+VERIFICA_DEZ_HORA_LIMITE:
+    LDA @54 # AC <- Valor da unidade de hora
+    CLT @10 # Verifica se é menor que 4
+    JLT VERIFICA_DEZ_HORA_LIMITE_MENOR
+    JMP VERIFICA_DEZ_HORA_LIMITE_MAIOR
+
+VERIFICA_DEZ_HORA_LIMITE_MENOR:
+    STA @510
+    LDA @55 # AC <- Valor guardado temporariamente
+    CLT @17 # Verifica se é menor do que 3
+    JLT VALOR_VALIDO_DEZ_HORA
+    LDI $0 
+    STA @5 # Valor de memória dezena de hora
+    STA @293 # Exibe em HEX5
+    JMP skip_tick
+
+VERIFICA_DEZ_HORA_LIMITE_MAIOR:
+    STA @510
+    LDA @55 # AC <- Valor guardado temporariamente
+    CLT @14 # Verifica se é menor do que 2
+    JLT VALOR_VALIDO_DEZ_HORA
+    LDI $0 
+    STA @5 # Valor de memória dezena de hora
+    STA @293 # Exibe em HEX5
+    JMP skip_tick
+
+VALOR_VALIDO_DEZ_HORA:
+    LDA @55 # Recupera valor temporario
+    STA @5 # Salva na memória de dezena de hora
+    STA @293 # Exibe em HEX5
+    JMP skip_tick
 
 INICIA_CONFIG:
     # Limpa KEY1 (debounce)
@@ -102,8 +345,6 @@ skip_tick:
     STA @292 # HEX4 <- horas (unidades)
     LDA @5 # horas (dezenas)
     STA @293 # HEX5 <- horas (dezenas)
-
-    # 3 -> Verifica KEY1 (ajuste de minutos)
     
     JMP LOOP # Se não pressionado (KEY1=0), pula ajuste
 
@@ -117,8 +358,8 @@ INC_SEGUNDO:
 
     # Incrementa SEGUNDOS (unidades)
     LDA @0 # AC <- segundos (unidades)
-    SOMA @6 # AC <- AC + 1
-    CEQ @7 # Compara com 10 (flagzero=1 se AC=10)
+    ADDI $1 # AC <- AC + 1
+    CEQI $10 # Compara com 10 (flagzero=1 se AC=10)
     JEQ inc_seg_dez # Se igual a 10, incrementa dezena de segundos
     STA @0 # Caso contrario, atualiza unidade de segundos
     RET
@@ -128,8 +369,8 @@ inc_seg_dez:
     CLR
     STA @0 # Zera unidade de segundos
     LDA @1 # AC <- segundos (dezenas)
-    SOMA @6 # AC <- AC + 1
-    CEQ @8 # Compara com 6 (flagzero=1 se AC=6)
+    ADDI $1 # AC <- AC + 1
+    CEQI $6 # Compara com 6 (flagzero=1 se AC=6)
     JEQ inc_uni_min # Se igual a 6, incrementa minutos
     STA @1 # Caso contrario, atualiza dezena de segundos
     JMP skip_tick
@@ -139,8 +380,8 @@ inc_uni_min:
     CLR
     STA @1 # Zera dezena de segundos
     LDA @2 # AC <- minutos (unidades)
-    SOMA @6 # AC <- AC + 1
-    CEQ @7 # Compara com 10 (flagzero=1 se AC=10)
+    ADDI $1 # AC <- AC + 1
+    CEQI $10 # Compara com 10 (flagzero=1 se AC=10)
     JEQ inc_min_dez # Se igual a 10, incrementa dezena de minutos
     STA @2 # Caso contrario, atualiza unidade de minutos
     JMP skip_tick
@@ -150,8 +391,8 @@ inc_min_dez:
     CLR
     STA @2 # Zera unidade de minutos
     LDA @3 # AC <- minutos (dezenas)
-    SOMA @6 # AC <- AC + 1
-    CEQ @8 # Compara com 6 (flagzero=1 se AC=6)
+    ADDI $1 # AC <- AC + 1
+    CEQI $6 # Compara com 6 (flagzero=1 se AC=6)
     JEQ inc_hora_uni # Se igual a 6, incrementa horas
     STA @3 # Caso contrario, atualiza dezena de minutos
     JMP skip_tick
@@ -161,12 +402,12 @@ inc_hora_uni:
     CLR
     STA @3        # Zera dezena de minutos
     LDA @4        # AC <- horas (unidades)
-    SOMA @6       # AC <- AC + 1
+    ADDI $1       # AC <- AC + 1
     STA @15       # Guarda temporariamente o valor incrementado
 
     # Verifica se dezena da hora é igual a 2
     LDA @5
-    CEQ @14       # Compara com 2
+    CEQI $2       # Compara com 2
     JEQ verifica_24
 
     # Se for menor que 2, verifica se unidade < 10
@@ -175,14 +416,14 @@ inc_hora_uni:
 
     # Se for maior que 2 (erro, mas previne), unidade deve ir até 3
     LDA @15
-    CEQ @10       # Compara com 4
+    CEQI $4      # Compara com 4
     JEQ inc_hora_dez
     STA @4
     JMP skip_tick
 
 verifica_menor_2:
     LDA @15
-    CEQ @7        # Compara com 10
+    CEQI $10    # Compara com 10
     JEQ inc_hora_dez
     STA @4
     JMP skip_tick
@@ -190,7 +431,7 @@ verifica_menor_2:
 verifica_24:
     # Verifica se chegou em 24:00:00
     LDA @15 # Recupera valor incrementado da unidade de horas
-    CEQ @10 # Compara com 4 (flagzero=1 se unidade=4)
+    CEQI $4 # Compara com 4 (flagzero=1 se unidade=4)
     JEQ reset_24h # Se unidade=4 e dezena=2, chegou-se em 24h -> reset
     STA @4 # Caso contrario, atualiza unidade de horas
     JMP skip_tick
@@ -200,7 +441,7 @@ inc_hora_dez:
     CLR
     STA @4 # Zera unidade de horas
     LDA @5 # AC <- horas (dezenas)
-    SOMA @6 # AC <- AC + 1
+    ADDI $1 # AC <- AC + 1
     STA @5 # Atualiza dezena de horas
     JMP skip_tick
 
