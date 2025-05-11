@@ -21,8 +21,9 @@ outputMIF  = Path("initROM.mif")
 noveBits   = True                               # 9‑bits (bit de habilita)
 
 OPCODE_WIDTH     = 4
+PAD_WIDTH = 2
 IMMEDIATE_WIDTH  = 9 if noveBits else 8
-WORD_WIDTH       = OPCODE_WIDTH + IMMEDIATE_WIDTH
+WORD_WIDTH       = OPCODE_WIDTH + PAD_WIDTH + IMMEDIATE_WIDTH
 
 mne: dict[str, int] = {
     "NOP": 0x0,
@@ -174,14 +175,13 @@ class Assembler:
                      else self._encode_immediate(parts[1], symbols)
         return const_name, imm_bits
 
-    # ---------- assemble completo --------------------------------
+        # ---------- assemble completo --------------------------------
     def assemble(self, asm_path: Path):
         lines    = read_file(asm_path)
         cleaned, consts, labels, _ = self._first_pass(lines)
-        expanded = expand_macros(cleaned)                     # ★ NOVO
+        expanded = expand_macros(cleaned)
 
         symbols = {**consts, **labels}
-
         vhdl, mif = [], []
         addr_w = len(str(len(expanded)-1))
         pc = 0
@@ -196,19 +196,22 @@ class Assembler:
             const, bits = self._line_to_const_bits(inst, symbols)
 
             vhdl.append(
-                f'tmp({pc}) := {const} & "{bits}"; -- {inst}'
+                f'tmp({pc}) := {const} & "00" & "{bits}"; -- {inst}'
                 f'{("  # " + comment) if comment else ""}'
             )
             mif.append(
-                f'\t{str(pc).ljust(addr_w)} : {const} & "{bits}"; -- {inst}'
+                f'\t{str(pc).ljust(addr_w)} : {const} & "00" & "{bits}"; -- {inst}'
             )
             pc += 1
 
         return vhdl, mif
 
+
+
 # ───────────────────  MAIN  ───────────────────────────────────────
 def main():
     asm = Assembler(mne, OPCODE_WIDTH, IMMEDIATE_WIDTH)
+    # ← RECEBE 3 VALORES
     vhdl, mif = asm.assemble(inputASM)
 
     outputBIN.write_text("\n".join(vhdl), encoding="utf-8")
@@ -216,7 +219,7 @@ def main():
 
     depth = 2 ** ((len(mif)).bit_length())
     header = [
-        f"WIDTH={WORD_WIDTH};",
+        f"WIDTH={WORD_WIDTH};",          # ← usa a largura real
         f"DEPTH={depth};",
         "",
         "ADDRESS_RADIX=DEC;",
@@ -229,6 +232,7 @@ def main():
 
     outputMIF.write_text("\n".join(header + mif + footer), encoding="utf-8")
     print(f"Gerado {outputMIF}")
+
 
 if __name__ == "__main__":
     try:

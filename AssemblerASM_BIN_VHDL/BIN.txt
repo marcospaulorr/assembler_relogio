@@ -1,352 +1,352 @@
 -- ------ SETUP -----
-tmp(0) := CLR & "000000000"; -- CLR  # AC <- 0
+tmp(0) := CLR & "00" & "000000000"; -- CLR  # AC <- 0
 
 -- Limpa todos os displays e LEDs
-tmp(1) := STA & "100100000"; -- STA @288  # HEX0 - segundos (unidades)
-tmp(2) := STA & "100100001"; -- STA @289  # HEX1 - segundos (dezenas)
-tmp(3) := STA & "100100010"; -- STA @290  # HEX2 - minutos (unidades)
-tmp(4) := STA & "100100011"; -- STA @291  # HEX3 - minutos (dezenas)
-tmp(5) := STA & "100100100"; -- STA @292  # HEX4 - horas (unidades)
-tmp(6) := STA & "100100101"; -- STA @293  # HEX5 - horas (dezenas)
+tmp(1) := STA & "00" & "100100000"; -- STA @288  # HEX0 - segundos (unidades)
+tmp(2) := STA & "00" & "100100001"; -- STA @289  # HEX1 - segundos (dezenas)
+tmp(3) := STA & "00" & "100100010"; -- STA @290  # HEX2 - minutos (unidades)
+tmp(4) := STA & "00" & "100100011"; -- STA @291  # HEX3 - minutos (dezenas)
+tmp(5) := STA & "00" & "100100100"; -- STA @292  # HEX4 - horas (unidades)
+tmp(6) := STA & "00" & "100100101"; -- STA @293  # HEX5 - horas (dezenas)
 
 -- Limpa LEDs
-tmp(7) := STA & "100000000"; -- STA @256  # LEDR0-7
-tmp(8) := STA & "100000001"; -- STA @257  # LEDR8
-tmp(9) := STA & "100000010"; -- STA @258  # LEDR9
+tmp(7) := STA & "00" & "100000000"; -- STA @256  # LEDR0-7
+tmp(8) := STA & "00" & "100000001"; -- STA @257  # LEDR8
+tmp(9) := STA & "00" & "100000010"; -- STA @258  # LEDR9
 
 -- Limpa leituras dos botões
-tmp(10) := STA & "111111110"; -- STA @510  # Limpa KEY1
-tmp(11) := STA & "111111111"; -- STA @511  # Limpa KEY0
+tmp(10) := STA & "00" & "111111110"; -- STA @510  # Limpa KEY1
+tmp(11) := STA & "00" & "111111111"; -- STA @511  # Limpa KEY0
 
 -- Inicializa variáveis do tempo com 00:00:00
-tmp(12) := STA & "000000000"; -- STA @0  # segundos (unidades)
-tmp(13) := STA & "000000001"; -- STA @1  # segundos (dezenas)
-tmp(14) := STA & "000000010"; -- STA @2  # minutos (unidades)
-tmp(15) := STA & "000000011"; -- STA @3  # minutos (dezenas)
-tmp(16) := STA & "000000100"; -- STA @4  # horas (unidades)
-tmp(17) := STA & "000000101"; -- STA @5  # horas (dezenas)
+tmp(12) := STA & "00" & "000000000"; -- STA @0  # segundos (unidades)
+tmp(13) := STA & "00" & "000000001"; -- STA @1  # segundos (dezenas)
+tmp(14) := STA & "00" & "000000010"; -- STA @2  # minutos (unidades)
+tmp(15) := STA & "00" & "000000011"; -- STA @3  # minutos (dezenas)
+tmp(16) := STA & "00" & "000000100"; -- STA @4  # horas (unidades)
+tmp(17) := STA & "00" & "000000101"; -- STA @5  # horas (dezenas)
 
 -- Inicializa flags
-tmp(18) := STA & "000001001"; -- STA @9  # const_0 = 0
-tmp(19) := STA & "000001100"; -- STA @12  # flag_ajuste_rapido = 0 (modo normal)
-tmp(20) := STA & "000001101"; -- STA @13  # flag_base_tempo = 0 (contador inicial)
+tmp(18) := STA & "00" & "000001001"; -- STA @9  # const_0 = 0
+tmp(19) := STA & "00" & "000001100"; -- STA @12  # flag_ajuste_rapido = 0 (modo normal)
+tmp(20) := STA & "00" & "000001101"; -- STA @13  # flag_base_tempo = 0 (contador inicial)
 
 -- Definindo constantes
-tmp(21) := LDI & "000000001"; -- LDI $1
-tmp(22) := STA & "000000110"; -- STA @6  # const_1 = 1 (para incrementos e verifica se as KEYs estão pressionadas)
+tmp(21) := LDI & "00" & "000000001"; -- LDI $1
+tmp(22) := STA & "00" & "000000110"; -- STA @6  # const_1 = 1 (para incrementos e verifica se as KEYs estão pressionadas)
 
-tmp(23) := LDI & "000001010"; -- LDI $10
-tmp(24) := STA & "000000111"; -- STA @7  # const_10 = 10 (limite decimal)
+tmp(23) := LDI & "00" & "000001010"; -- LDI $10
+tmp(24) := STA & "00" & "000000111"; -- STA @7  # const_10 = 10 (limite decimal)
 
-tmp(25) := LDI & "000000110"; -- LDI $6
-tmp(26) := STA & "000001000"; -- STA @8  # const_6 = 6 (limite de dezenas de segundos/minutos)
+tmp(25) := LDI & "00" & "000000110"; -- LDI $6
+tmp(26) := STA & "00" & "000001000"; -- STA @8  # const_6 = 6 (limite de dezenas de segundos/minutos)
 
-tmp(27) := LDI & "000000100"; -- LDI $4
-tmp(28) := STA & "000001010"; -- STA @10  # const_4 = 4 (para verificação de dezena de horas)
+tmp(27) := LDI & "00" & "000000100"; -- LDI $4
+tmp(28) := STA & "00" & "000001010"; -- STA @10  # const_4 = 4 (para verificação de dezena de horas)
 
-tmp(29) := LDI & "000011000"; -- LDI $24
-tmp(30) := STA & "000001011"; -- STA @11  # const_24 = 24 (limite de horas total)
+tmp(29) := LDI & "00" & "000011000"; -- LDI $24
+tmp(30) := STA & "00" & "000001011"; -- STA @11  # const_24 = 24 (limite de horas total)
 
-tmp(31) := LDI & "000000010"; -- LDI $2
-tmp(32) := STA & "000001110"; -- STA @14  # const_2 = 2 (para verificação de dezena de horas)
+tmp(31) := LDI & "00" & "000000010"; -- LDI $2
+tmp(32) := STA & "00" & "000001110"; -- STA @14  # const_2 = 2 (para verificação de dezena de horas)
 
-tmp(33) := LDI & "000000000"; -- LDI $0
-tmp(34) := STA & "000010000"; -- STA @16  # const_0
+tmp(33) := LDI & "00" & "000000000"; -- LDI $0
+tmp(34) := STA & "00" & "000010000"; -- STA @16  # const_0
 
-tmp(35) := LDI & "000000011"; -- LDI $3
-tmp(36) := STA & "000010001"; -- STA @17  # const 3
+tmp(35) := LDI & "00" & "000000011"; -- LDI $3
+tmp(36) := STA & "00" & "000010001"; -- STA @17  # const 3
 
-tmp(37) := JMP & "011010110"; -- JMP INICIA_CONFIG  # Se pressionado (KEY1=1), vai para incremento
+tmp(37) := JMP & "00" & "011010110"; -- JMP INICIA_CONFIG  # Se pressionado (KEY1=1), vai para incremento
 
 -- ----- FIM DO SETUP ----
 -- Laço principal (LOOP)
 
 -- PARA CONFIGURAR O HORÁRIO MANUALMENTE
-tmp(38) := LDA & "101100001"; --     LDA @353  # AC <- KEY1
-tmp(39) := ANDI & "000000001"; --     ANDI $1
-tmp(40) := CEQI & "000000001"; --     CEQI $1  # Compara com const_1
-tmp(41) := JEQ & "000101111"; --     JEQ ZERA_TUDO
+tmp(38) := LDA & "00" & "101100001"; --     LDA @353  # AC <- KEY1
+tmp(39) := ANDI & "00" & "000000001"; --     ANDI $1
+tmp(40) := CEQI & "00" & "000000001"; --     CEQI $1  # Compara com const_1
+tmp(41) := JEQ & "00" & "000101111"; --     JEQ ZERA_TUDO
 
 -- 1 -> Leitura de KEY0 (base de tempo/incremento de segundos)
-tmp(42) := LDA & "101100000"; --     LDA @352  # AC <- KEY0
-tmp(43) := ANDI & "000000001"; --     ANDI $1  # Pega o último bit.
-tmp(44) := CEQI & "000000001"; --     CEQI $1  # Compara com const_1. flagzero=1 se KEY0=1 (pressionado)
-tmp(45) := JEQ & "011100110"; --     JEQ inc_tempo  # Se pressionado (KEY0=1), vai para incremento
-tmp(46) := JMP & "011101000"; --     JMP skip_tick  # Se não pressionado (KEY0=0), pula incremento
+tmp(42) := LDA & "00" & "101100000"; --     LDA @352  # AC <- KEY0
+tmp(43) := ANDI & "00" & "000000001"; --     ANDI $1  # Pega o último bit.
+tmp(44) := CEQI & "00" & "000000001"; --     CEQI $1  # Compara com const_1. flagzero=1 se KEY0=1 (pressionado)
+tmp(45) := JEQ & "00" & "011100110"; --     JEQ inc_tempo  # Se pressionado (KEY0=1), vai para incremento
+tmp(46) := JMP & "00" & "011101000"; --     JMP skip_tick  # Se não pressionado (KEY0=0), pula incremento
 
 
 -- Limpa KEY1 (debounce)
-tmp(47) := STA & "111111110"; --     STA @510
+tmp(47) := STA & "00" & "111111110"; --     STA @510
 -- Zera o relógio completamente
-tmp(48) := LDI & "000000000"; --     LDI $0
-tmp(49) := STA & "000000000"; --     STA @0  # segundos (unidades)
-tmp(50) := STA & "000000001"; --     STA @1  # segundos (dezenas)
-tmp(51) := STA & "000000010"; --     STA @2  # minutos (unidades)
-tmp(52) := STA & "000000011"; --     STA @3  # minutos (dezenas)
-tmp(53) := STA & "000000100"; --     STA @4  # horas (unidades)
-tmp(54) := STA & "000000101"; --     STA @5  # horas (dezenas)
+tmp(48) := LDI & "00" & "000000000"; --     LDI $0
+tmp(49) := STA & "00" & "000000000"; --     STA @0  # segundos (unidades)
+tmp(50) := STA & "00" & "000000001"; --     STA @1  # segundos (dezenas)
+tmp(51) := STA & "00" & "000000010"; --     STA @2  # minutos (unidades)
+tmp(52) := STA & "00" & "000000011"; --     STA @3  # minutos (dezenas)
+tmp(53) := STA & "00" & "000000100"; --     STA @4  # horas (unidades)
+tmp(54) := STA & "00" & "000000101"; --     STA @5  # horas (dezenas)
 -- Atualiza displays mostrando todos zerados
-tmp(55) := LDI & "000000000"; --     LDI $0
-tmp(56) := STA & "100100000"; --     STA @288  # HEX0
-tmp(57) := STA & "100100001"; --     STA @289  # HEX1
-tmp(58) := STA & "100100010"; --     STA @290  # HEX2
-tmp(59) := STA & "100100011"; --     STA @291  # HEX3
-tmp(60) := STA & "100100100"; --     STA @292  # HEX4
-tmp(61) := STA & "100100101"; --     STA @293  # HEX5
+tmp(55) := LDI & "00" & "000000000"; --     LDI $0
+tmp(56) := STA & "00" & "100100000"; --     STA @288  # HEX0
+tmp(57) := STA & "00" & "100100001"; --     STA @289  # HEX1
+tmp(58) := STA & "00" & "100100010"; --     STA @290  # HEX2
+tmp(59) := STA & "00" & "100100011"; --     STA @291  # HEX3
+tmp(60) := STA & "00" & "100100100"; --     STA @292  # HEX4
+tmp(61) := STA & "00" & "100100101"; --     STA @293  # HEX5
 
-tmp(62) := STA & "111111110"; --     STA @510
-tmp(63) := JMP & "001000000"; --     JMP CONFIGURA_UNI_SEG
-
-
-tmp(64) := LDI & "000000001"; --     LDI $1
-tmp(65) := STA & "100000000"; --     STA @256  # Acende LEDR0
-
-tmp(66) := LDA & "101000000"; --     LDA @320  # SW0-7
-tmp(67) := ANDI & "000001111"; --     ANDI $15  # 4 bits menos significativos
-tmp(68) := STA & "000110010"; --     STA @50  # Armazena temporariamente
-tmp(69) := STA & "100100000"; --     STA @288  # Aparece em HEX0
-
--- Verifica se é válido
-tmp(70) := LDA & "101100001"; --     LDA @353  # AC <- KEY1
-tmp(71) := ANDI & "000000001"; --     ANDI $1
-tmp(72) := CEQI & "000000001"; --     CEQI $1  # Compara com const_1
-tmp(73) := JEQ & "001001011"; --     JEQ VERIFICA_UNI_SEG
-tmp(74) := JMP & "001000000"; --     JMP CONFIGURA_UNI_SEG
+tmp(62) := STA & "00" & "111111110"; --     STA @510
+tmp(63) := JMP & "00" & "001000000"; --     JMP CONFIGURA_UNI_SEG
 
 
-tmp(75) := STA & "111111110"; --     STA @510
-tmp(76) := LDA & "000110010"; --     LDA @50  # AC <- Valor guardado temporariamente
-tmp(77) := CLT & "000000111"; --     CLT @7
-tmp(78) := JLT & "001010011"; --     JLT VALOR_VALIDO_UNI_SEG
-tmp(79) := LDI & "000000000"; --     LDI $0
-tmp(80) := STA & "000000000"; --     STA @0
-tmp(81) := STA & "100100000"; --     STA @288  # Exibe em HEX0
-tmp(82) := JMP & "001010111"; --     JMP CONFIGURA_DEZ_SEG
+tmp(64) := LDI & "00" & "000000001"; --     LDI $1
+tmp(65) := STA & "00" & "100000000"; --     STA @256  # Acende LEDR0
 
-
-tmp(83) := LDA & "000110010"; --     LDA @50  # Recupera valor temporario
-tmp(84) := STA & "000000000"; --     STA @0  # Salva na memória de unidade de segundos
-tmp(85) := STA & "100100000"; --     STA @288  # Exibe em HEX0
-tmp(86) := JMP & "001010111"; --     JMP CONFIGURA_DEZ_SEG
-
-
-tmp(87) := LDI & "000000010"; --     LDI $2
-tmp(88) := STA & "100000000"; --     STA @256  # Acende LEDR1
-
-tmp(89) := LDA & "101000000"; --     LDA @320  # SW0-7
-tmp(90) := ANDI & "000001111"; --     ANDI $15  # 4 bits menos significativos
-tmp(91) := STA & "000110011"; --     STA @51  # Armazena temporariamente
-tmp(92) := STA & "100100001"; --     STA @289  # Aparece em HEX0
+tmp(66) := LDA & "00" & "101000000"; --     LDA @320  # SW0-7
+tmp(67) := ANDI & "00" & "000001111"; --     ANDI $15  # 4 bits menos significativos
+tmp(68) := STA & "00" & "000110010"; --     STA @50  # Armazena temporariamente
+tmp(69) := STA & "00" & "100100000"; --     STA @288  # Aparece em HEX0
 
 -- Verifica se é válido
-tmp(93) := LDA & "101100001"; --     LDA @353  # AC <- KEY1
-tmp(94) := ANDI & "000000001"; --     ANDI $1
-tmp(95) := CEQI & "000000001"; --     CEQI $1  # Compara com const_1
-tmp(96) := JEQ & "001100010"; --     JEQ VERIFICA_DEZ_SEG
-tmp(97) := JMP & "001010111"; --     JMP CONFIGURA_DEZ_SEG
+tmp(70) := LDA & "00" & "101100001"; --     LDA @353  # AC <- KEY1
+tmp(71) := ANDI & "00" & "000000001"; --     ANDI $1
+tmp(72) := CEQI & "00" & "000000001"; --     CEQI $1  # Compara com const_1
+tmp(73) := JEQ & "00" & "001001011"; --     JEQ VERIFICA_UNI_SEG
+tmp(74) := JMP & "00" & "001000000"; --     JMP CONFIGURA_UNI_SEG
 
 
-tmp(98) := STA & "111111110"; --     STA @510
-tmp(99) := LDA & "000110011"; --     LDA @51  # AC <- Valor guardado temporariamente
-tmp(100) := CLT & "000001000"; --     CLT @8
-tmp(101) := JLT & "001101010"; --     JLT VALOR_VALIDO_DEZ_SEG
-tmp(102) := LDI & "000000000"; --     LDI $0
-tmp(103) := STA & "000000001"; --     STA @1  # Valor de memória dezena de segundo
-tmp(104) := STA & "100100001"; --     STA @289  # Exibe em HEX0
-tmp(105) := JMP & "001101110"; --     JMP CONFIGURA_UNI_MIN
+tmp(75) := STA & "00" & "111111110"; --     STA @510
+tmp(76) := LDA & "00" & "000110010"; --     LDA @50  # AC <- Valor guardado temporariamente
+tmp(77) := CLT & "00" & "000000111"; --     CLT @7
+tmp(78) := JLT & "00" & "001010011"; --     JLT VALOR_VALIDO_UNI_SEG
+tmp(79) := LDI & "00" & "000000000"; --     LDI $0
+tmp(80) := STA & "00" & "000000000"; --     STA @0
+tmp(81) := STA & "00" & "100100000"; --     STA @288  # Exibe em HEX0
+tmp(82) := JMP & "00" & "001010111"; --     JMP CONFIGURA_DEZ_SEG
 
 
-tmp(106) := LDA & "000110011"; --     LDA @51  # Recupera valor temporario
-tmp(107) := STA & "000000001"; --     STA @1  # Salva na memória de dezena de segundos
-tmp(108) := STA & "100100001"; --     STA @289  # Exibe em HEX1
-tmp(109) := JMP & "001101110"; --     JMP CONFIGURA_UNI_MIN
+tmp(83) := LDA & "00" & "000110010"; --     LDA @50  # Recupera valor temporario
+tmp(84) := STA & "00" & "000000000"; --     STA @0  # Salva na memória de unidade de segundos
+tmp(85) := STA & "00" & "100100000"; --     STA @288  # Exibe em HEX0
+tmp(86) := JMP & "00" & "001010111"; --     JMP CONFIGURA_DEZ_SEG
 
 
-tmp(110) := LDI & "000000100"; --     LDI $4
-tmp(111) := STA & "100000000"; --     STA @256  # Acende LEDR2
+tmp(87) := LDI & "00" & "000000010"; --     LDI $2
+tmp(88) := STA & "00" & "100000000"; --     STA @256  # Acende LEDR1
 
-tmp(112) := LDA & "101000000"; --     LDA @320  # SW0-7
-tmp(113) := ANDI & "000001111"; --     ANDI $15  # 4 bits menos significativos
-tmp(114) := STA & "000110100"; --     STA @52  # Armazena temporariamente
-tmp(115) := STA & "100100010"; --     STA @290  # Aparece em HEX0
-
--- Verifica se é válido
-tmp(116) := LDA & "101100001"; --     LDA @353  # AC <- KEY1
-tmp(117) := ANDI & "000000001"; --     ANDI $1
-tmp(118) := CEQI & "000000001"; --     CEQI $1  # Compara com const_1
-tmp(119) := JEQ & "001111001"; --     JEQ VERIFICA_UNI_MIN
-tmp(120) := JMP & "001101110"; --     JMP CONFIGURA_UNI_MIN
-
-
-tmp(121) := STA & "111111110"; --     STA @510
-tmp(122) := LDA & "000110100"; --     LDA @52  # AC <- Valor guardado temporariamente
-tmp(123) := CLT & "000000111"; --     CLT @7
-tmp(124) := JLT & "010000001"; --     JLT VALOR_VALIDO_UNI_MIN
-tmp(125) := LDI & "000000000"; --     LDI $0
-tmp(126) := STA & "000000010"; --     STA @2  # Valor de memória unidade de minuto
-tmp(127) := STA & "100100010"; --     STA @290  # Exibe em HEX2
-tmp(128) := JMP & "010000101"; --     JMP CONFIGURA_DEZ_MIN
-
-
-tmp(129) := LDA & "000110100"; --     LDA @52  # Recupera valor temporario
-tmp(130) := STA & "000000010"; --     STA @2  # Salva na memória de segundo de minuto
-tmp(131) := STA & "100100010"; --     STA @290  # Exibe em HEX2
-tmp(132) := JMP & "010000101"; --     JMP CONFIGURA_DEZ_MIN
-
-
-tmp(133) := LDI & "000001000"; --     LDI $8
-tmp(134) := STA & "100000000"; --     STA @256  # Acende LEDR3
-
-tmp(135) := LDA & "101000000"; --     LDA @320  # SW0-7
-tmp(136) := ANDI & "000001111"; --     ANDI $15  # 4 bits menos significativos
-tmp(137) := STA & "000110101"; --     STA @53  # Armazena temporariamente
-tmp(138) := STA & "100100011"; --     STA @291  # Aparece em HEX3
+tmp(89) := LDA & "00" & "101000000"; --     LDA @320  # SW0-7
+tmp(90) := ANDI & "00" & "000001111"; --     ANDI $15  # 4 bits menos significativos
+tmp(91) := STA & "00" & "000110011"; --     STA @51  # Armazena temporariamente
+tmp(92) := STA & "00" & "100100001"; --     STA @289  # Aparece em HEX0
 
 -- Verifica se é válido
-tmp(139) := LDA & "101100001"; --     LDA @353  # AC <- KEY1
-tmp(140) := ANDI & "000000001"; --     ANDI $1
-tmp(141) := CEQI & "000000001"; --     CEQI $1  # Compara com const_1
-tmp(142) := JEQ & "010010000"; --     JEQ VERIFICA_DEZ_MIN
-tmp(143) := JMP & "010000101"; --     JMP CONFIGURA_DEZ_MIN
+tmp(93) := LDA & "00" & "101100001"; --     LDA @353  # AC <- KEY1
+tmp(94) := ANDI & "00" & "000000001"; --     ANDI $1
+tmp(95) := CEQI & "00" & "000000001"; --     CEQI $1  # Compara com const_1
+tmp(96) := JEQ & "00" & "001100010"; --     JEQ VERIFICA_DEZ_SEG
+tmp(97) := JMP & "00" & "001010111"; --     JMP CONFIGURA_DEZ_SEG
 
 
-tmp(144) := STA & "111111110"; --     STA @510
-tmp(145) := LDA & "000110101"; --     LDA @53  # AC <- Valor guardado temporariamente
-tmp(146) := CLT & "000001000"; --     CLT @8
-tmp(147) := JLT & "010011000"; --     JLT VALOR_VALIDO_DEZ_MIN
-tmp(148) := LDI & "000000000"; --     LDI $0
-tmp(149) := STA & "000000011"; --     STA @3  # Valor de memória dezena de minuto
-tmp(150) := STA & "100100011"; --     STA @291  # Exibe em HEX3
-tmp(151) := JMP & "010011100"; --     JMP CONFIGURA_UNI_HORA
+tmp(98) := STA & "00" & "111111110"; --     STA @510
+tmp(99) := LDA & "00" & "000110011"; --     LDA @51  # AC <- Valor guardado temporariamente
+tmp(100) := CLT & "00" & "000001000"; --     CLT @8
+tmp(101) := JLT & "00" & "001101010"; --     JLT VALOR_VALIDO_DEZ_SEG
+tmp(102) := LDI & "00" & "000000000"; --     LDI $0
+tmp(103) := STA & "00" & "000000001"; --     STA @1  # Valor de memória dezena de segundo
+tmp(104) := STA & "00" & "100100001"; --     STA @289  # Exibe em HEX0
+tmp(105) := JMP & "00" & "001101110"; --     JMP CONFIGURA_UNI_MIN
 
 
-tmp(152) := LDA & "000110101"; --     LDA @53  # Recupera valor temporario
-tmp(153) := STA & "000000011"; --     STA @3  # Salva na memória de segundo de minuto
-tmp(154) := STA & "100100011"; --     STA @291  # Exibe em HEX3
-tmp(155) := JMP & "010011100"; --     JMP CONFIGURA_UNI_HORA
+tmp(106) := LDA & "00" & "000110011"; --     LDA @51  # Recupera valor temporario
+tmp(107) := STA & "00" & "000000001"; --     STA @1  # Salva na memória de dezena de segundos
+tmp(108) := STA & "00" & "100100001"; --     STA @289  # Exibe em HEX1
+tmp(109) := JMP & "00" & "001101110"; --     JMP CONFIGURA_UNI_MIN
 
 
-tmp(156) := LDI & "000010000"; --     LDI $16
-tmp(157) := STA & "100000000"; --     STA @256  # Acende LEDR
+tmp(110) := LDI & "00" & "000000100"; --     LDI $4
+tmp(111) := STA & "00" & "100000000"; --     STA @256  # Acende LEDR2
 
-tmp(158) := LDA & "101000000"; --     LDA @320  # SW0-7
-tmp(159) := ANDI & "000001111"; --     ANDI $15  # 4 bits menos significativos
-tmp(160) := STA & "000110110"; --     STA @54  # Armazena temporariamente
-tmp(161) := STA & "100100100"; --     STA @292  # Aparece em HEX4
-
--- Verifica se é válido
-tmp(162) := LDA & "101100001"; --     LDA @353  # AC <- KEY1
-tmp(163) := ANDI & "000000001"; --     ANDI $1
-tmp(164) := CEQI & "000000001"; --     CEQI $1  # Compara com const_1
-tmp(165) := JEQ & "010100111"; --     JEQ VERIFICA_UNI_HORA
-tmp(166) := JMP & "010011100"; --     JMP CONFIGURA_UNI_HORA
-
-
-tmp(167) := STA & "111111110"; --     STA @510
-tmp(168) := LDA & "000110110"; --     LDA @54  # AC <- Valor guardado temporariamente
-tmp(169) := CLT & "000000111"; --     CLT @7
-tmp(170) := JLT & "010101111"; --     JLT VALOR_VALIDO_UNI_HORA
-tmp(171) := LDI & "000000000"; --     LDI $0
-tmp(172) := STA & "000000100"; --     STA @4  # Valor de memória unidade de hora
-tmp(173) := STA & "100100100"; --     STA @292  # Exibe em HEX4
-tmp(174) := JMP & "010110011"; --     JMP CONFIGURA_DEZ_HORA
-
-
-tmp(175) := LDA & "000110110"; --     LDA @54  # Recupera valor temporario
-tmp(176) := STA & "000000100"; --     STA @4  # Salva na memória de unidade de hora
-tmp(177) := STA & "100100100"; --     STA @292  # Exibe em HEX4
-tmp(178) := JMP & "010110011"; --     JMP CONFIGURA_DEZ_HORA
-
-
-tmp(179) := LDI & "000100000"; --     LDI $32
-tmp(180) := STA & "100000000"; --     STA @256  # Acende LEDR
-
-tmp(181) := LDA & "101000000"; --     LDA @320  # SW0-7
-tmp(182) := ANDI & "000001111"; --     ANDI $15  # 4 bits menos significativos
-tmp(183) := STA & "000110111"; --     STA @55  # Armazena temporariamente
-tmp(184) := STA & "100100101"; --     STA @293  # Aparece em HEX5
+tmp(112) := LDA & "00" & "101000000"; --     LDA @320  # SW0-7
+tmp(113) := ANDI & "00" & "000001111"; --     ANDI $15  # 4 bits menos significativos
+tmp(114) := STA & "00" & "000110100"; --     STA @52  # Armazena temporariamente
+tmp(115) := STA & "00" & "100100010"; --     STA @290  # Aparece em HEX0
 
 -- Verifica se é válido
-tmp(185) := LDA & "101100001"; --     LDA @353  # AC <- KEY1
-tmp(186) := ANDI & "000000001"; --     ANDI $1
-tmp(187) := CEQI & "000000001"; --     CEQI $1  # Compara com const_1
-tmp(188) := JEQ & "010111110"; --     JEQ VERIFICA_DEZ_HORA_LIMITE
-tmp(189) := JMP & "010110011"; --     JMP CONFIGURA_DEZ_HORA
+tmp(116) := LDA & "00" & "101100001"; --     LDA @353  # AC <- KEY1
+tmp(117) := ANDI & "00" & "000000001"; --     ANDI $1
+tmp(118) := CEQI & "00" & "000000001"; --     CEQI $1  # Compara com const_1
+tmp(119) := JEQ & "00" & "001111001"; --     JEQ VERIFICA_UNI_MIN
+tmp(120) := JMP & "00" & "001101110"; --     JMP CONFIGURA_UNI_MIN
 
 
-tmp(190) := LDA & "000110110"; --     LDA @54  # AC <- Valor da unidade de hora
-tmp(191) := CLT & "000001010"; --     CLT @10  # Verifica se é menor que 4
-tmp(192) := JLT & "011000010"; --     JLT VERIFICA_DEZ_HORA_LIMITE_MENOR
-tmp(193) := JMP & "011001010"; --     JMP VERIFICA_DEZ_HORA_LIMITE_MAIOR
+tmp(121) := STA & "00" & "111111110"; --     STA @510
+tmp(122) := LDA & "00" & "000110100"; --     LDA @52  # AC <- Valor guardado temporariamente
+tmp(123) := CLT & "00" & "000000111"; --     CLT @7
+tmp(124) := JLT & "00" & "010000001"; --     JLT VALOR_VALIDO_UNI_MIN
+tmp(125) := LDI & "00" & "000000000"; --     LDI $0
+tmp(126) := STA & "00" & "000000010"; --     STA @2  # Valor de memória unidade de minuto
+tmp(127) := STA & "00" & "100100010"; --     STA @290  # Exibe em HEX2
+tmp(128) := JMP & "00" & "010000101"; --     JMP CONFIGURA_DEZ_MIN
 
 
-tmp(194) := STA & "111111110"; --     STA @510
-tmp(195) := LDA & "000110111"; --     LDA @55  # AC <- Valor guardado temporariamente
-tmp(196) := CLT & "000010001"; --     CLT @17  # Verifica se é menor do que 3
-tmp(197) := JLT & "011010010"; --     JLT VALOR_VALIDO_DEZ_HORA
-tmp(198) := LDI & "000000000"; --     LDI $0
-tmp(199) := STA & "000000101"; --     STA @5  # Valor de memória dezena de hora
-tmp(200) := STA & "100100101"; --     STA @293  # Exibe em HEX5
-tmp(201) := JMP & "011101000"; --     JMP skip_tick
+tmp(129) := LDA & "00" & "000110100"; --     LDA @52  # Recupera valor temporario
+tmp(130) := STA & "00" & "000000010"; --     STA @2  # Salva na memória de segundo de minuto
+tmp(131) := STA & "00" & "100100010"; --     STA @290  # Exibe em HEX2
+tmp(132) := JMP & "00" & "010000101"; --     JMP CONFIGURA_DEZ_MIN
 
 
-tmp(202) := STA & "111111110"; --     STA @510
-tmp(203) := LDA & "000110111"; --     LDA @55  # AC <- Valor guardado temporariamente
-tmp(204) := CLT & "000001110"; --     CLT @14  # Verifica se é menor do que 2
-tmp(205) := JLT & "011010010"; --     JLT VALOR_VALIDO_DEZ_HORA
-tmp(206) := LDI & "000000000"; --     LDI $0
-tmp(207) := STA & "000000101"; --     STA @5  # Valor de memória dezena de hora
-tmp(208) := STA & "100100101"; --     STA @293  # Exibe em HEX5
-tmp(209) := JMP & "011101000"; --     JMP skip_tick
+tmp(133) := LDI & "00" & "000001000"; --     LDI $8
+tmp(134) := STA & "00" & "100000000"; --     STA @256  # Acende LEDR3
+
+tmp(135) := LDA & "00" & "101000000"; --     LDA @320  # SW0-7
+tmp(136) := ANDI & "00" & "000001111"; --     ANDI $15  # 4 bits menos significativos
+tmp(137) := STA & "00" & "000110101"; --     STA @53  # Armazena temporariamente
+tmp(138) := STA & "00" & "100100011"; --     STA @291  # Aparece em HEX3
+
+-- Verifica se é válido
+tmp(139) := LDA & "00" & "101100001"; --     LDA @353  # AC <- KEY1
+tmp(140) := ANDI & "00" & "000000001"; --     ANDI $1
+tmp(141) := CEQI & "00" & "000000001"; --     CEQI $1  # Compara com const_1
+tmp(142) := JEQ & "00" & "010010000"; --     JEQ VERIFICA_DEZ_MIN
+tmp(143) := JMP & "00" & "010000101"; --     JMP CONFIGURA_DEZ_MIN
 
 
-tmp(210) := LDA & "000110111"; --     LDA @55  # Recupera valor temporario
-tmp(211) := STA & "000000101"; --     STA @5  # Salva na memória de dezena de hora
-tmp(212) := STA & "100100101"; --     STA @293  # Exibe em HEX5
-tmp(213) := JMP & "011101000"; --     JMP skip_tick
+tmp(144) := STA & "00" & "111111110"; --     STA @510
+tmp(145) := LDA & "00" & "000110101"; --     LDA @53  # AC <- Valor guardado temporariamente
+tmp(146) := CLT & "00" & "000001000"; --     CLT @8
+tmp(147) := JLT & "00" & "010011000"; --     JLT VALOR_VALIDO_DEZ_MIN
+tmp(148) := LDI & "00" & "000000000"; --     LDI $0
+tmp(149) := STA & "00" & "000000011"; --     STA @3  # Valor de memória dezena de minuto
+tmp(150) := STA & "00" & "100100011"; --     STA @291  # Exibe em HEX3
+tmp(151) := JMP & "00" & "010011100"; --     JMP CONFIGURA_UNI_HORA
+
+
+tmp(152) := LDA & "00" & "000110101"; --     LDA @53  # Recupera valor temporario
+tmp(153) := STA & "00" & "000000011"; --     STA @3  # Salva na memória de segundo de minuto
+tmp(154) := STA & "00" & "100100011"; --     STA @291  # Exibe em HEX3
+tmp(155) := JMP & "00" & "010011100"; --     JMP CONFIGURA_UNI_HORA
+
+
+tmp(156) := LDI & "00" & "000010000"; --     LDI $16
+tmp(157) := STA & "00" & "100000000"; --     STA @256  # Acende LEDR
+
+tmp(158) := LDA & "00" & "101000000"; --     LDA @320  # SW0-7
+tmp(159) := ANDI & "00" & "000001111"; --     ANDI $15  # 4 bits menos significativos
+tmp(160) := STA & "00" & "000110110"; --     STA @54  # Armazena temporariamente
+tmp(161) := STA & "00" & "100100100"; --     STA @292  # Aparece em HEX4
+
+-- Verifica se é válido
+tmp(162) := LDA & "00" & "101100001"; --     LDA @353  # AC <- KEY1
+tmp(163) := ANDI & "00" & "000000001"; --     ANDI $1
+tmp(164) := CEQI & "00" & "000000001"; --     CEQI $1  # Compara com const_1
+tmp(165) := JEQ & "00" & "010100111"; --     JEQ VERIFICA_UNI_HORA
+tmp(166) := JMP & "00" & "010011100"; --     JMP CONFIGURA_UNI_HORA
+
+
+tmp(167) := STA & "00" & "111111110"; --     STA @510
+tmp(168) := LDA & "00" & "000110110"; --     LDA @54  # AC <- Valor guardado temporariamente
+tmp(169) := CLT & "00" & "000000111"; --     CLT @7
+tmp(170) := JLT & "00" & "010101111"; --     JLT VALOR_VALIDO_UNI_HORA
+tmp(171) := LDI & "00" & "000000000"; --     LDI $0
+tmp(172) := STA & "00" & "000000100"; --     STA @4  # Valor de memória unidade de hora
+tmp(173) := STA & "00" & "100100100"; --     STA @292  # Exibe em HEX4
+tmp(174) := JMP & "00" & "010110011"; --     JMP CONFIGURA_DEZ_HORA
+
+
+tmp(175) := LDA & "00" & "000110110"; --     LDA @54  # Recupera valor temporario
+tmp(176) := STA & "00" & "000000100"; --     STA @4  # Salva na memória de unidade de hora
+tmp(177) := STA & "00" & "100100100"; --     STA @292  # Exibe em HEX4
+tmp(178) := JMP & "00" & "010110011"; --     JMP CONFIGURA_DEZ_HORA
+
+
+tmp(179) := LDI & "00" & "000100000"; --     LDI $32
+tmp(180) := STA & "00" & "100000000"; --     STA @256  # Acende LEDR
+
+tmp(181) := LDA & "00" & "101000000"; --     LDA @320  # SW0-7
+tmp(182) := ANDI & "00" & "000001111"; --     ANDI $15  # 4 bits menos significativos
+tmp(183) := STA & "00" & "000110111"; --     STA @55  # Armazena temporariamente
+tmp(184) := STA & "00" & "100100101"; --     STA @293  # Aparece em HEX5
+
+-- Verifica se é válido
+tmp(185) := LDA & "00" & "101100001"; --     LDA @353  # AC <- KEY1
+tmp(186) := ANDI & "00" & "000000001"; --     ANDI $1
+tmp(187) := CEQI & "00" & "000000001"; --     CEQI $1  # Compara com const_1
+tmp(188) := JEQ & "00" & "010111110"; --     JEQ VERIFICA_DEZ_HORA_LIMITE
+tmp(189) := JMP & "00" & "010110011"; --     JMP CONFIGURA_DEZ_HORA
+
+
+tmp(190) := LDA & "00" & "000110110"; --     LDA @54  # AC <- Valor da unidade de hora
+tmp(191) := CLT & "00" & "000001010"; --     CLT @10  # Verifica se é menor que 4
+tmp(192) := JLT & "00" & "011000010"; --     JLT VERIFICA_DEZ_HORA_LIMITE_MENOR
+tmp(193) := JMP & "00" & "011001010"; --     JMP VERIFICA_DEZ_HORA_LIMITE_MAIOR
+
+
+tmp(194) := STA & "00" & "111111110"; --     STA @510
+tmp(195) := LDA & "00" & "000110111"; --     LDA @55  # AC <- Valor guardado temporariamente
+tmp(196) := CLT & "00" & "000010001"; --     CLT @17  # Verifica se é menor do que 3
+tmp(197) := JLT & "00" & "011010010"; --     JLT VALOR_VALIDO_DEZ_HORA
+tmp(198) := LDI & "00" & "000000000"; --     LDI $0
+tmp(199) := STA & "00" & "000000101"; --     STA @5  # Valor de memória dezena de hora
+tmp(200) := STA & "00" & "100100101"; --     STA @293  # Exibe em HEX5
+tmp(201) := JMP & "00" & "011101000"; --     JMP skip_tick
+
+
+tmp(202) := STA & "00" & "111111110"; --     STA @510
+tmp(203) := LDA & "00" & "000110111"; --     LDA @55  # AC <- Valor guardado temporariamente
+tmp(204) := CLT & "00" & "000001110"; --     CLT @14  # Verifica se é menor do que 2
+tmp(205) := JLT & "00" & "011010010"; --     JLT VALOR_VALIDO_DEZ_HORA
+tmp(206) := LDI & "00" & "000000000"; --     LDI $0
+tmp(207) := STA & "00" & "000000101"; --     STA @5  # Valor de memória dezena de hora
+tmp(208) := STA & "00" & "100100101"; --     STA @293  # Exibe em HEX5
+tmp(209) := JMP & "00" & "011101000"; --     JMP skip_tick
+
+
+tmp(210) := LDA & "00" & "000110111"; --     LDA @55  # Recupera valor temporario
+tmp(211) := STA & "00" & "000000101"; --     STA @5  # Salva na memória de dezena de hora
+tmp(212) := STA & "00" & "100100101"; --     STA @293  # Exibe em HEX5
+tmp(213) := JMP & "00" & "011101000"; --     JMP skip_tick
 
 
 -- Limpa KEY1 (debounce)
-tmp(214) := STA & "111111110"; --     STA @510
+tmp(214) := STA & "00" & "111111110"; --     STA @510
 -- Zera o relógio completamente
-tmp(215) := CLR & "000000000"; --     CLR
-tmp(216) := STA & "000000000"; --     STA @0  # segundos (unidades)
-tmp(217) := STA & "000000001"; --     STA @1  # segundos (dezenas)
-tmp(218) := STA & "000000010"; --     STA @2  # minutos (unidades)
-tmp(219) := STA & "000000011"; --     STA @3  # minutos (dezenas)
-tmp(220) := STA & "000000100"; --     STA @4  # horas (unidades)
-tmp(221) := STA & "000000101"; --     STA @5  # horas (dezenas)
+tmp(215) := CLR & "00" & "000000000"; --     CLR
+tmp(216) := STA & "00" & "000000000"; --     STA @0  # segundos (unidades)
+tmp(217) := STA & "00" & "000000001"; --     STA @1  # segundos (dezenas)
+tmp(218) := STA & "00" & "000000010"; --     STA @2  # minutos (unidades)
+tmp(219) := STA & "00" & "000000011"; --     STA @3  # minutos (dezenas)
+tmp(220) := STA & "00" & "000000100"; --     STA @4  # horas (unidades)
+tmp(221) := STA & "00" & "000000101"; --     STA @5  # horas (dezenas)
 -- Atualiza displays mostrando todos zerados
-tmp(222) := CLR & "000000000"; --     CLR
-tmp(223) := STA & "100100000"; --     STA @288  # HEX0
-tmp(224) := STA & "100100001"; --     STA @289  # HEX1
-tmp(225) := STA & "100100010"; --     STA @290  # HEX2
-tmp(226) := STA & "100100011"; --     STA @291  # HEX3
-tmp(227) := STA & "100100100"; --     STA @292  # HEX4
-tmp(228) := STA & "100100101"; --     STA @293  # HEX5
+tmp(222) := CLR & "00" & "000000000"; --     CLR
+tmp(223) := STA & "00" & "100100000"; --     STA @288  # HEX0
+tmp(224) := STA & "00" & "100100001"; --     STA @289  # HEX1
+tmp(225) := STA & "00" & "100100010"; --     STA @290  # HEX2
+tmp(226) := STA & "00" & "100100011"; --     STA @291  # HEX3
+tmp(227) := STA & "00" & "100100100"; --     STA @292  # HEX4
+tmp(228) := STA & "00" & "100100101"; --     STA @293  # HEX5
 
-tmp(229) := JMP & "000100110"; --     JMP LOOP
+tmp(229) := JMP & "00" & "000100110"; --     JMP LOOP
 
 
-tmp(230) := JSR & "011110101"; --     JSR INC_SEGUNDO  # Sub-rotina de incremento
-tmp(231) := JMP & "011101000"; --     JMP skip_tick  # Continua após incremento
+tmp(230) := JSR & "00" & "011110101"; --     JSR INC_SEGUNDO  # Sub-rotina de incremento
+tmp(231) := JMP & "00" & "011101000"; --     JMP skip_tick  # Continua após incremento
 
 
 -- 2 -> Atualiza displays com horário atual
-tmp(232) := LDA & "000000000"; --     LDA @0  # segundos (unidades)
-tmp(233) := STA & "100100000"; --     STA @288  # HEX0 <- segundos (unidades)
-tmp(234) := LDA & "000000001"; --     LDA @1  # segundos (dezenas)
-tmp(235) := STA & "100100001"; --     STA @289  # HEX1 <- segundos (dezenas)
-tmp(236) := LDA & "000000010"; --     LDA @2  # minutos (unidades)
-tmp(237) := STA & "100100010"; --     STA @290  # HEX2 <- minutos (unidades)
-tmp(238) := LDA & "000000011"; --     LDA @3  # minutos (dezenas)
-tmp(239) := STA & "100100011"; --     STA @291  # HEX3 <- minutos (dezenas)
-tmp(240) := LDA & "000000100"; --     LDA @4  # horas (unidades)
-tmp(241) := STA & "100100100"; --     STA @292  # HEX4 <- horas (unidades)
-tmp(242) := LDA & "000000101"; --     LDA @5  # horas (dezenas)
-tmp(243) := STA & "100100101"; --     STA @293  # HEX5 <- horas (dezenas)
+tmp(232) := LDA & "00" & "000000000"; --     LDA @0  # segundos (unidades)
+tmp(233) := STA & "00" & "100100000"; --     STA @288  # HEX0 <- segundos (unidades)
+tmp(234) := LDA & "00" & "000000001"; --     LDA @1  # segundos (dezenas)
+tmp(235) := STA & "00" & "100100001"; --     STA @289  # HEX1 <- segundos (dezenas)
+tmp(236) := LDA & "00" & "000000010"; --     LDA @2  # minutos (unidades)
+tmp(237) := STA & "00" & "100100010"; --     STA @290  # HEX2 <- minutos (unidades)
+tmp(238) := LDA & "00" & "000000011"; --     LDA @3  # minutos (dezenas)
+tmp(239) := STA & "00" & "100100011"; --     STA @291  # HEX3 <- minutos (dezenas)
+tmp(240) := LDA & "00" & "000000100"; --     LDA @4  # horas (unidades)
+tmp(241) := STA & "00" & "100100100"; --     STA @292  # HEX4 <- horas (unidades)
+tmp(242) := LDA & "00" & "000000101"; --     LDA @5  # horas (dezenas)
+tmp(243) := STA & "00" & "100100101"; --     STA @293  # HEX5 <- horas (dezenas)
 
-tmp(244) := JMP & "000100110"; --     JMP LOOP  # Se não pressionado (KEY1=0), pula ajuste
+tmp(244) := JMP & "00" & "000100110"; --     JMP LOOP  # Se não pressionado (KEY1=0), pula ajuste
 
 
 
@@ -354,106 +354,106 @@ tmp(244) := JMP & "000100110"; --     JMP LOOP  # Se não pressionado (KEY1=0), 
 
 -- Sub-rotina para incrementar segundos
 
-tmp(245) := STA & "111111111"; --     STA @511  # Limpa KEY0 (debounce)
+tmp(245) := STA & "00" & "111111111"; --     STA @511  # Limpa KEY0 (debounce)
 
 -- Incrementa SEGUNDOS (unidades)
-tmp(246) := LDA & "000000000"; --     LDA @0  # AC <- segundos (unidades)
-tmp(247) := ADDI & "000000001"; --     ADDI $1  # AC <- AC + 1
-tmp(248) := CEQI & "000001010"; --     CEQI $10  # Compara com 10 (flagzero=1 se AC=10)
-tmp(249) := JEQ & "011111100"; --     JEQ inc_seg_dez  # Se igual a 10, incrementa dezena de segundos
-tmp(250) := STA & "000000000"; --     STA @0  # Caso contrario, atualiza unidade de segundos
-tmp(251) := RET & "000000000"; --     RET
+tmp(246) := LDA & "00" & "000000000"; --     LDA @0  # AC <- segundos (unidades)
+tmp(247) := ADDI & "00" & "000000001"; --     ADDI $1  # AC <- AC + 1
+tmp(248) := CEQI & "00" & "000001010"; --     CEQI $10  # Compara com 10 (flagzero=1 se AC=10)
+tmp(249) := JEQ & "00" & "011111100"; --     JEQ inc_seg_dez  # Se igual a 10, incrementa dezena de segundos
+tmp(250) := STA & "00" & "000000000"; --     STA @0  # Caso contrario, atualiza unidade de segundos
+tmp(251) := RET & "00" & "000000000"; --     RET
 
 
 -- Incrementa SEGUNDOS (dezenas)
-tmp(252) := CLR & "000000000"; --     CLR
-tmp(253) := STA & "000000000"; --     STA @0  # Zera unidade de segundos
-tmp(254) := LDA & "000000001"; --     LDA @1  # AC <- segundos (dezenas)
-tmp(255) := ADDI & "000000001"; --     ADDI $1  # AC <- AC + 1
-tmp(256) := CEQI & "000000110"; --     CEQI $6  # Compara com 6 (flagzero=1 se AC=6)
-tmp(257) := JEQ & "100000100"; --     JEQ inc_uni_min  # Se igual a 6, incrementa minutos
-tmp(258) := STA & "000000001"; --     STA @1  # Caso contrario, atualiza dezena de segundos
-tmp(259) := JMP & "011101000"; --     JMP skip_tick
+tmp(252) := CLR & "00" & "000000000"; --     CLR
+tmp(253) := STA & "00" & "000000000"; --     STA @0  # Zera unidade de segundos
+tmp(254) := LDA & "00" & "000000001"; --     LDA @1  # AC <- segundos (dezenas)
+tmp(255) := ADDI & "00" & "000000001"; --     ADDI $1  # AC <- AC + 1
+tmp(256) := CEQI & "00" & "000000110"; --     CEQI $6  # Compara com 6 (flagzero=1 se AC=6)
+tmp(257) := JEQ & "00" & "100000100"; --     JEQ inc_uni_min  # Se igual a 6, incrementa minutos
+tmp(258) := STA & "00" & "000000001"; --     STA @1  # Caso contrario, atualiza dezena de segundos
+tmp(259) := JMP & "00" & "011101000"; --     JMP skip_tick
 
 
 -- Incrementa MINUTOS (unidades)
-tmp(260) := CLR & "000000000"; --     CLR
-tmp(261) := STA & "000000001"; --     STA @1  # Zera dezena de segundos
-tmp(262) := LDA & "000000010"; --     LDA @2  # AC <- minutos (unidades)
-tmp(263) := ADDI & "000000001"; --     ADDI $1  # AC <- AC + 1
-tmp(264) := CEQI & "000001010"; --     CEQI $10  # Compara com 10 (flagzero=1 se AC=10)
-tmp(265) := JEQ & "100001100"; --     JEQ inc_min_dez  # Se igual a 10, incrementa dezena de minutos
-tmp(266) := STA & "000000010"; --     STA @2  # Caso contrario, atualiza unidade de minutos
-tmp(267) := JMP & "011101000"; --     JMP skip_tick
+tmp(260) := CLR & "00" & "000000000"; --     CLR
+tmp(261) := STA & "00" & "000000001"; --     STA @1  # Zera dezena de segundos
+tmp(262) := LDA & "00" & "000000010"; --     LDA @2  # AC <- minutos (unidades)
+tmp(263) := ADDI & "00" & "000000001"; --     ADDI $1  # AC <- AC + 1
+tmp(264) := CEQI & "00" & "000001010"; --     CEQI $10  # Compara com 10 (flagzero=1 se AC=10)
+tmp(265) := JEQ & "00" & "100001100"; --     JEQ inc_min_dez  # Se igual a 10, incrementa dezena de minutos
+tmp(266) := STA & "00" & "000000010"; --     STA @2  # Caso contrario, atualiza unidade de minutos
+tmp(267) := JMP & "00" & "011101000"; --     JMP skip_tick
 
 
 -- Incrementa MINUTOS (dezenas)
-tmp(268) := CLR & "000000000"; --     CLR
-tmp(269) := STA & "000000010"; --     STA @2  # Zera unidade de minutos
-tmp(270) := LDA & "000000011"; --     LDA @3  # AC <- minutos (dezenas)
-tmp(271) := ADDI & "000000001"; --     ADDI $1  # AC <- AC + 1
-tmp(272) := CEQI & "000000110"; --     CEQI $6  # Compara com 6 (flagzero=1 se AC=6)
-tmp(273) := JEQ & "100010100"; --     JEQ inc_hora_uni  # Se igual a 6, incrementa horas
-tmp(274) := STA & "000000011"; --     STA @3  # Caso contrario, atualiza dezena de minutos
-tmp(275) := JMP & "011101000"; --     JMP skip_tick
+tmp(268) := CLR & "00" & "000000000"; --     CLR
+tmp(269) := STA & "00" & "000000010"; --     STA @2  # Zera unidade de minutos
+tmp(270) := LDA & "00" & "000000011"; --     LDA @3  # AC <- minutos (dezenas)
+tmp(271) := ADDI & "00" & "000000001"; --     ADDI $1  # AC <- AC + 1
+tmp(272) := CEQI & "00" & "000000110"; --     CEQI $6  # Compara com 6 (flagzero=1 se AC=6)
+tmp(273) := JEQ & "00" & "100010100"; --     JEQ inc_hora_uni  # Se igual a 6, incrementa horas
+tmp(274) := STA & "00" & "000000011"; --     STA @3  # Caso contrario, atualiza dezena de minutos
+tmp(275) := JMP & "00" & "011101000"; --     JMP skip_tick
 
 
 -- Incrementa HORAS (unidades)
-tmp(276) := CLR & "000000000"; --     CLR
-tmp(277) := STA & "000000011"; --     STA @3  # Zera dezena de minutos
-tmp(278) := LDA & "000000100"; --     LDA @4  # AC <- horas (unidades)
-tmp(279) := ADDI & "000000001"; --     ADDI $1  # AC <- AC + 1
-tmp(280) := STA & "000001111"; --     STA @15  # Guarda temporariamente o valor incrementado
+tmp(276) := CLR & "00" & "000000000"; --     CLR
+tmp(277) := STA & "00" & "000000011"; --     STA @3  # Zera dezena de minutos
+tmp(278) := LDA & "00" & "000000100"; --     LDA @4  # AC <- horas (unidades)
+tmp(279) := ADDI & "00" & "000000001"; --     ADDI $1  # AC <- AC + 1
+tmp(280) := STA & "00" & "000001111"; --     STA @15  # Guarda temporariamente o valor incrementado
 
 -- Verifica se dezena da hora é igual a 2
-tmp(281) := LDA & "000000101"; --     LDA @5
-tmp(282) := CEQI & "000000010"; --     CEQI $2  # Compara com 2
-tmp(283) := JEQ & "100101000"; --     JEQ verifica_24
+tmp(281) := LDA & "00" & "000000101"; --     LDA @5
+tmp(282) := CEQI & "00" & "000000010"; --     CEQI $2  # Compara com 2
+tmp(283) := JEQ & "00" & "100101000"; --     JEQ verifica_24
 
 -- Se for menor que 2, verifica se unidade < 10
-tmp(284) := CLT & "000001110"; --     CLT @14  # Compara se dezena < 2
-tmp(285) := JLT & "100100011"; --     JLT verifica_menor_2
+tmp(284) := CLT & "00" & "000001110"; --     CLT @14  # Compara se dezena < 2
+tmp(285) := JLT & "00" & "100100011"; --     JLT verifica_menor_2
 
 -- Se for maior que 2 (erro, mas previne), unidade deve ir até 3
-tmp(286) := LDA & "000001111"; --     LDA @15
-tmp(287) := CEQI & "000000100"; --     CEQI $4  # Compara com 4
-tmp(288) := JEQ & "100101101"; --     JEQ inc_hora_dez
-tmp(289) := STA & "000000100"; --     STA @4
-tmp(290) := JMP & "011101000"; --     JMP skip_tick
+tmp(286) := LDA & "00" & "000001111"; --     LDA @15
+tmp(287) := CEQI & "00" & "000000100"; --     CEQI $4  # Compara com 4
+tmp(288) := JEQ & "00" & "100101101"; --     JEQ inc_hora_dez
+tmp(289) := STA & "00" & "000000100"; --     STA @4
+tmp(290) := JMP & "00" & "011101000"; --     JMP skip_tick
 
 
-tmp(291) := LDA & "000001111"; --     LDA @15
-tmp(292) := CEQI & "000001010"; --     CEQI $10  # Compara com 10
-tmp(293) := JEQ & "100101101"; --     JEQ inc_hora_dez
-tmp(294) := STA & "000000100"; --     STA @4
-tmp(295) := JMP & "011101000"; --     JMP skip_tick
+tmp(291) := LDA & "00" & "000001111"; --     LDA @15
+tmp(292) := CEQI & "00" & "000001010"; --     CEQI $10  # Compara com 10
+tmp(293) := JEQ & "00" & "100101101"; --     JEQ inc_hora_dez
+tmp(294) := STA & "00" & "000000100"; --     STA @4
+tmp(295) := JMP & "00" & "011101000"; --     JMP skip_tick
 
 
 -- Verifica se chegou em 24:00:00
-tmp(296) := LDA & "000001111"; --     LDA @15  # Recupera valor incrementado da unidade de horas
-tmp(297) := CEQI & "000000100"; --     CEQI $4  # Compara com 4 (flagzero=1 se unidade=4)
-tmp(298) := JEQ & "100110011"; --     JEQ reset_24h  # Se unidade=4 e dezena=2, chegou-se em 24h -> reset
-tmp(299) := STA & "000000100"; --     STA @4  # Caso contrario, atualiza unidade de horas
-tmp(300) := JMP & "011101000"; --     JMP skip_tick
+tmp(296) := LDA & "00" & "000001111"; --     LDA @15  # Recupera valor incrementado da unidade de horas
+tmp(297) := CEQI & "00" & "000000100"; --     CEQI $4  # Compara com 4 (flagzero=1 se unidade=4)
+tmp(298) := JEQ & "00" & "100110011"; --     JEQ reset_24h  # Se unidade=4 e dezena=2, chegou-se em 24h -> reset
+tmp(299) := STA & "00" & "000000100"; --     STA @4  # Caso contrario, atualiza unidade de horas
+tmp(300) := JMP & "00" & "011101000"; --     JMP skip_tick
 
 
 -- Incrementa HORAS (dezenas)
-tmp(301) := CLR & "000000000"; --     CLR
-tmp(302) := STA & "000000100"; --     STA @4  # Zera unidade de horas
-tmp(303) := LDA & "000000101"; --     LDA @5  # AC <- horas (dezenas)
-tmp(304) := ADDI & "000000001"; --     ADDI $1  # AC <- AC + 1
-tmp(305) := STA & "000000101"; --     STA @5  # Atualiza dezena de horas
-tmp(306) := JMP & "011101000"; --     JMP skip_tick
+tmp(301) := CLR & "00" & "000000000"; --     CLR
+tmp(302) := STA & "00" & "000000100"; --     STA @4  # Zera unidade de horas
+tmp(303) := LDA & "00" & "000000101"; --     LDA @5  # AC <- horas (dezenas)
+tmp(304) := ADDI & "00" & "000000001"; --     ADDI $1  # AC <- AC + 1
+tmp(305) := STA & "00" & "000000101"; --     STA @5  # Atualiza dezena de horas
+tmp(306) := JMP & "00" & "011101000"; --     JMP skip_tick
 
 
 -- Reseta para 00:00:00
-tmp(307) := CLR & "000000000"; --     CLR
-tmp(308) := STA & "000000000"; --     STA @0  # Zera segundos (unidades)
-tmp(309) := STA & "000000001"; --     STA @1  # Zera segundos (dezenas)
-tmp(310) := STA & "000000010"; --     STA @2  # Zera minutos (unidades)
-tmp(311) := STA & "000000011"; --     STA @3  # Zera minutos (dezenas)
-tmp(312) := STA & "000000100"; --     STA @4  # Zera horas (unidades)
-tmp(313) := STA & "000000101"; --     STA @5  # Zera horas (dezenas)
-tmp(314) := JMP & "011101000"; --     JMP skip_tick
+tmp(307) := CLR & "00" & "000000000"; --     CLR
+tmp(308) := STA & "00" & "000000000"; --     STA @0  # Zera segundos (unidades)
+tmp(309) := STA & "00" & "000000001"; --     STA @1  # Zera segundos (dezenas)
+tmp(310) := STA & "00" & "000000010"; --     STA @2  # Zera minutos (unidades)
+tmp(311) := STA & "00" & "000000011"; --     STA @3  # Zera minutos (dezenas)
+tmp(312) := STA & "00" & "000000100"; --     STA @4  # Zera horas (unidades)
+tmp(313) := STA & "00" & "000000101"; --     STA @5  # Zera horas (dezenas)
+tmp(314) := JMP & "00" & "011101000"; --     JMP skip_tick
 
 
